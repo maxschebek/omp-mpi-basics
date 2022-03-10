@@ -43,11 +43,14 @@ program histo
     endif
 
     t_start = MPI_Wtime()
+
+    ! Compute individual histogram on each rank
     do i = 1, n_local
         value = rand_r(seed)
         hist(IAND(value, 15)) = hist(IAND(value, 15)) + 1
     enddo
 
+    ! Collect and add all individual histograms on rank 0
     if (rank == 0) then
         do i = 1, size - 1
             call MPI_Recv(hist_send, 16, MPI_INT, i, 0, &

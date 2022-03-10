@@ -1,5 +1,5 @@
 ! This program computes pi by the Monte Carlo method.
-! OMP is used for parallelization. 
+! OMP is used for parallelization.
 program mcpi
 !$  use omp_lib
     use, intrinsic :: iso_c_binding
@@ -37,7 +37,8 @@ program mcpi
     seed = 2
     call cpu_time(t_start)
 !$  t_start = OMP_get_wtime()
-
+    ! Each thread computes an individual number of random examples
+    ! Addition is done automatically by using reduction
 !$omp parallel private(seed, x, y, my_thread)
 !$  my_thread = OMP_GET_THREAD_NUM()
 !$  seed = my_thread + 1

@@ -1,7 +1,7 @@
 ! This program calculates a histogram with 16 bins (the least
 ! significant four bits) from the results of the standard
 ! rand_r() random number generator.
-! OMP is used for parallelization. 
+! OMP is used for parallelization.
 program histo
 !$  use omp_lib
     use, intrinsic :: iso_c_binding
@@ -32,7 +32,9 @@ program histo
     call cpu_time(t_start)
 !$  t_start = OMP_get_wtime()
 
-! ---- PARALLEL LOOP WITH REDUCTION
+    ! ---- PARALLEL LOOP WITH REDUCTION
+    ! Each thread computes an individual histogram
+    ! Addition is done automatically by using reduction
 !$omp parallel private(value, seed)
 !$  seed = OMP_GET_THREAD_NUM()*6
 !$OMP do reduction(+:hist_red)
@@ -43,7 +45,9 @@ program histo
 !$OMP end do
 !$OMP end parallel
 
-! ---- PARALLEL LOOP WITH CRITICAL
+    ! ---- PARALLEL LOOP WITH CRITICAL
+    ! Each thread computes an individual histogram
+    ! Addition is done manually in the critical region
 !$omp parallel private(value, seed, hist_loc)
 !$  seed = OMP_GET_THREAD_NUM()*6
     hist_loc = 0

@@ -47,13 +47,14 @@ program mcpi
     endif
     t_start = MPI_Wtime()
 
+    ! Do a subset of random examples on each rank
     do i = 1, n_local
         x = rand_r(seed)/DBLE(RAND_MAX)
         y = rand_r(seed)/DBLE(RAND_MAX)
         if (sqrt(x**2 + y**2) < 1.d0) count = count + 1
     enddo
 
-    ! Collect results from all participating processors on rank 0
+    ! Collect results from all participating ranks on rank 0
     if (rank == 0) then
         do i = 1, size - 1
             call MPI_Recv(val, 1, MPI_INT, i, 0, &
